@@ -14,16 +14,11 @@ use Symfony\Component\Templating\EngineInterface;
 class DefaultController extends Controller
 
 {
-
-
-
     /**
      * @Route("/", name="homepage")
      */
     public function indexAction(Request $request)
     {
-//          $this->makeUserObjByUserId(2,'ar');
-
         return $this->redirectToRoute('sonata_admin_dashboard');
     }
 
@@ -60,7 +55,7 @@ class DefaultController extends Controller
                         'u_record' => $object
                     )
                 );
-            } elseif($response_status == 1) {
+            } elseif ($response_status == 1) {
                 $response = array(
                     'data' => array(
                         'result' => 0,
@@ -68,7 +63,7 @@ class DefaultController extends Controller
                         'u_record' => $object
                     )
                 );
-            } elseif($response_status == 2) {
+            } elseif ($response_status == 2) {
                 $response = array(
                     'data' => array(
                         'result' => 0,
@@ -88,8 +83,12 @@ class DefaultController extends Controller
         return $response;
     }
 
-
-
+    /**
+     * @param $locale
+     * @param int $response_status
+     * @param $object
+     * @return array
+     */
     public function UserLoginResponse($locale, $response_status = 0, $object)
     {
         $responseObj = $this->getDoctrine()->getRepository("AppBundle:ServiceResponses")->findBy(array(
@@ -117,7 +116,7 @@ class DefaultController extends Controller
                         'u_record' => $object
                     )
                 );
-            } elseif($response_status == 1) {
+            } elseif ($response_status == 1) {
                 $response = array(
                     'data' => array(
                         'result' => 0,
@@ -125,7 +124,7 @@ class DefaultController extends Controller
                         'u_record' => (object)$object
                     )
                 );
-            } elseif($response_status == 2) {
+            } elseif ($response_status == 2) {
                 $response = array(
                     'data' => array(
                         'result' => 0,
@@ -188,19 +187,19 @@ class DefaultController extends Controller
      * @param $userId
      * @return array
      */
-    public function makeUserObjByUserId($userId,$locale)
+    public function makeUserObjByUserId($userId, $locale)
     {
         $user = $this->getDoctrine()->getManager()->getRepository("AppBundle:AppUser")->find($userId);
         $locales = null;
         $output = [];
         $em = $this->getDoctrine()->getManager();
 //        $em->getFilters()->disable('oneLocale');
-            $trans = $user->getTranslations();
-            $totalArrayLocales = [$locale];
-            $locales = $totalArrayLocales;
-            foreach ($locales as $locale1) {
-                $output = $trans->get($locale1);
-            }
+        $trans = $user->getTranslations();
+        $totalArrayLocales = [$locale];
+        $locales = $totalArrayLocales;
+        foreach ($locales as $locale1) {
+            $output = $trans->get($locale1);
+        }
         /**
          * @var $output AppUserTranslation
          */
@@ -208,22 +207,22 @@ class DefaultController extends Controller
             'user' => $user
         ));
         $token = null;
-        foreach ($loginToken as $val){
-          $token = $val->getTokenKey();
+        foreach ($loginToken as $val) {
+            $token = $val->getTokenKey();
         }
-        if($output){
+        if ($output) {
             $response = [
                 'userId' => $user->getId(),
                 'token' => $token,
                 'firstName' => $output->getFirstName(),
                 'lastName' => $output->getLastName(),
-                'username' => $output->getFirstName().' '.$output->getLastName(),
+                'username' => $output->getFirstName() . ' ' . $output->getLastName(),
                 'email' => $user->getEmail(),
                 'created' => $user->getCreated(),
                 'userstatus' => $user->getStatus()
 
             ];
-        }else{
+        } else {
             $response = [
                 'userId' => $user->getId(),
                 'token' => $token,
@@ -233,7 +232,7 @@ class DefaultController extends Controller
                 'email' => $user->getEmail(),
                 'created' => $user->getCreated(),
                 'userstatus' => $user->getStatus()
-             ];
+            ];
         }
 
 
@@ -307,6 +306,11 @@ class DefaultController extends Controller
         }
     }
 
+    /**
+     * @param $user
+     * @param $code
+     * @return int
+     */
     public function sendEmailOnUserCreate($user, $code)
     {
         /**
@@ -319,7 +323,7 @@ class DefaultController extends Controller
             ->setTo($user->getEmail())
             ->setBody("Your account has been created Please activate your account by using this Verification code " . $code);
 
-      $sent =   $mailer->send($message);
+        $sent = $mailer->send($message);
 
         if ($sent) {
             $logger->info('Sign up email sent to user  email: ' . $user->getEmail());
@@ -331,6 +335,12 @@ class DefaultController extends Controller
 
     }
 
+    /**
+     * @param $locale
+     * @param int $response_status
+     * @param $object
+     * @return array
+     */
     public function UserActivateAccountResponse($locale, $response_status = 0, $object)
     {
         $responseObj = $this->getDoctrine()->getRepository("AppBundle:ServiceResponses")->findBy(array(
@@ -358,7 +368,7 @@ class DefaultController extends Controller
                         'u_record' => $object
                     )
                 );
-            } elseif($response_status == 1) {
+            } elseif ($response_status == 1) {
                 $response = array(
                     'data' => array(
                         'result' => 0,
@@ -366,7 +376,7 @@ class DefaultController extends Controller
                         'u_record' => (object)$object
                     )
                 );
-            } elseif($response_status == 2) {
+            } elseif ($response_status == 2) {
                 $response = array(
                     'data' => array(
                         'result' => 0,
@@ -386,6 +396,11 @@ class DefaultController extends Controller
         return $response;
     }
 
+    /**
+     * @param $locale
+     * @param int $response_status
+     * @return array
+     */
     public function UserPasswordReset($locale, $response_status = 0)
     {
 //        dump($locale);die;
@@ -414,7 +429,7 @@ class DefaultController extends Controller
 //                        'u_record' => $object
                     )
                 );
-            } elseif($response_status == 1) {
+            } elseif ($response_status == 1) {
                 $response = array(
                     'data' => array(
                         'result' => 0,
@@ -422,7 +437,7 @@ class DefaultController extends Controller
 //                        'u_record' => (object)$object
                     )
                 );
-            } elseif($response_status == 2) {
+            } elseif ($response_status == 2) {
                 $response = array(
                     'data' => array(
                         'result' => 0,
@@ -436,6 +451,178 @@ class DefaultController extends Controller
                 'data' => array(
                     'result' => 0,
                     'message' => 'Please add success and failure response messages from admin panel first , service type is user_password_reset'
+                )
+            );
+        }
+        return $response;
+    }
+
+    /**
+     * @param $locale
+     * @param int $response_status
+     * @param $object
+     * @return array
+     */
+    public function CategoryListingResponse($locale, $response_status = 0, $object)
+    {
+//        dump($locale);die;
+        $responseObj = $this->getDoctrine()->getRepository("AppBundle:ServiceResponses")->findBy(array(
+            'serviceType' => 'category_listing'
+        ));
+        $locales = null;
+        $output = [];
+        $response = array();
+//        $em = $this->getDoctrine()->getManager();
+//        $em->getFilters()->disable('oneLocale');
+        foreach ($responseObj as $obj) {
+            $trans = $obj->getTranslations();
+            $totalArrayLocales = [$locale];
+            $locales = $totalArrayLocales;
+            foreach ($locales as $locale1) {
+                $output = $trans->get($locale1);
+            }
+        }
+        if (!empty($output)) {
+            if ($response_status == 0) {
+                $response = array(
+                    'data' => $object
+                );
+            } elseif ($response_status == 1) {
+                $response = array(
+                    'data' => array(
+                        'result' => 0,
+                        'message' => $output->getFailureMsg(),
+//                        'u_record' => (object)$object
+                    )
+                );
+            } elseif ($response_status == 2) {
+                $response = array(
+                    'data' => array(
+                        'result' => 0,
+                        'message' => $output->getFailureMsg1(),
+//                        'u_record' => (object)$object
+                    )
+                );
+            }
+        } else {
+            $response = array(
+                'data' => array(
+                    'result' => 0,
+                    'message' => 'Please add success and failure response messages from admin panel first , service type is category_listing'
+                )
+            );
+        }
+        return $response;
+    }
+
+    /**
+     * @param $locale
+     * @param int $response_status
+     * @param $object
+     * @return array
+     */
+    public function locationListingResponse($locale, $response_status = 0, $object)
+    {
+//        dump($locale);die;
+        $responseObj = $this->getDoctrine()->getRepository("AppBundle:ServiceResponses")->findBy(array(
+            'serviceType' => 'category_listing'
+        ));
+        $locales = null;
+        $output = [];
+        $response = array();
+//        $em = $this->getDoctrine()->getManager();
+//        $em->getFilters()->disable('oneLocale');
+        foreach ($responseObj as $obj) {
+            $trans = $obj->getTranslations();
+            $totalArrayLocales = [$locale];
+            $locales = $totalArrayLocales;
+            foreach ($locales as $locale1) {
+                $output = $trans->get($locale1);
+            }
+        }
+        if (!empty($output)) {
+            if ($response_status == 0) {
+                $response = array(
+                    'data' => $object
+                );
+            } elseif ($response_status == 1) {
+                $response = array(
+                    'data' => array(
+                        'result' => 0,
+                        'message' => $output->getFailureMsg(),
+//                        'u_record' => (object)$object
+                    )
+                );
+            } elseif ($response_status == 2) {
+                $response = array(
+                    'data' => array(
+                        'result' => 0,
+                        'message' => $output->getFailureMsg1(),
+//                        'u_record' => (object)$object
+                    )
+                );
+            }
+        } else {
+            $response = array(
+                'data' => array(
+                    'result' => 0,
+                    'message' => 'Please add success and failure response messages from admin panel first , service type is category_listing'
+                )
+            );
+        }
+        return $response;
+    }
+
+    /**
+     * @param $locale
+     * @param int $response_status
+     * @param $object
+     * @return array
+     */
+    public function areaListingResponse($locale, $response_status = 0, $object)
+    {
+        $responseObj = $this->getDoctrine()->getRepository("AppBundle:ServiceResponses")->findBy(array(
+            'serviceType' => 'area_listing'
+        ));
+        $locales = null;
+        $output = [];
+        $response = array();
+        foreach ($responseObj as $obj) {
+            $trans = $obj->getTranslations();
+            $totalArrayLocales = [$locale];
+            $locales = $totalArrayLocales;
+            foreach ($locales as $locale1) {
+                $output = $trans->get($locale1);
+            }
+        }
+        if (!empty($output)) {
+            if ($response_status == 0) {
+                $response = array(
+                    'result' => 1,
+                    'message' => $output->getSuccessMsg(),
+                    'data' => $object
+                );
+            } elseif ($response_status == 1) {
+                $response = array(
+                    'result' => 0,
+                    'message' => $output->getFailureMsg(),
+                    'data' => $object
+
+                );
+            } elseif ($response_status == 2) {
+                $response = array(
+                    'data' => array(
+                        'result' => 0,
+                        'message' => $output->getFailureMsg1(),
+//                        'u_record' => (object)$object
+                    )
+                );
+            }
+        } else {
+            $response = array(
+                'data' => array(
+                    'result' => 0,
+                    'message' => 'Please add success and failure response messages from admin panel first , service type is area_listing'
                 )
             );
         }
