@@ -1,19 +1,26 @@
-# This file is a "template" of what your parameters.yml file should look like
-# Set parameters here that may be different on each deployment target of the app, e.g. development, staging, production.
-# https://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
+# This file is auto-generated during the composer install
 parameters:
-    database_host: 127.0.0.1
-    database_port: ~
-    database_name: symfony
-    database_user: root
-    database_password: ~
-    # You should uncomment this if you want to use pdo_sqlite
-    #database_path: '%kernel.project_dir%/var/data/data.sqlite'
+#    database_host: 127.0.0.1
+#    database_port: null
+#    database_name: khidmati_group
+#    database_user: root
+#    database_password: null
+#    locales: [en,ar]
+#    mailer_transport: gmail
+#    mailer_host: 127.0.0.1
+#    mailer_user: omair.thedevclan@gmail.com
+#    mailer_password: bcs02121019
+#    secret: HereIsMyMostSecretTokenThatIamUsingToMakeTheApplicationMOstSecureEver
 
-    mailer_transport: smtp
+
+    database_host: us-cdbr-iron-east-05.cleardb.net
+    database_port: null
+    database_name: heroku_c5a7a51d55d3e77
+    database_user: ba01af60c1f92b
+    database_password: 034773eb
+    locales: [en,ar]
+    mailer_transport: gmail
     mailer_host: 127.0.0.1
-    mailer_user: ~
-    mailer_password: ~
-
-    # A secret key that's used to generate certain security-related tokens
-    secret: ThisTokenIsNotSoSecretChangeIt
+    mailer_user: omair.thedevclan@gmail.com
+    mailer_password: bcs02121019
+    secret: HereIsMyMostSecretTokenThatIamUsingToMakeTheApplicationMOstSecureEver

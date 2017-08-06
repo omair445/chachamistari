@@ -1,0 +1,18 @@
+services:
+    app.admin.user:
+        class: AppBundle\Admin\UserAdmin
+        arguments: [~, AppBundle\Entity\User, SonataAdminBundle:CRUD]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: User }
+
+    app.admin.service_responses:
+        class: AppBundle\Admin\ServiceResponsesAdmin
+        arguments: [~, AppBundle\Entity\ServiceResponses, SonataAdminBundle:CRUD]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: ServiceResponses }
+
+    app.admin.app_user:
+        class: AppBundle\Admin\AppUserAdmin
+        arguments: [~, AppBundle\Entity\AppUser, SonataAdminBundle:CRUD]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: AppUser }
