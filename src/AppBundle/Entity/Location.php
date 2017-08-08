@@ -93,13 +93,15 @@ class Location
         $this->created = $created;
     }
 
-    function __toString()
+    public function getCurrentTranslation()
     {
-      return (string)$this->getLocationHeading($this);
+        return $this->getTranslations()->last();
+
     }
 
-    public function getLocationHeading($object){
-       return $object->getCurrentTranslation()->getTranslatable()->getTranslations()->getValues()[1]->getLocationHeading();
+    function __toString()
+    {
+        return (string)$this->getCurrentTranslation();
     }
 
 

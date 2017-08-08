@@ -158,7 +158,8 @@ class AppUser
 
     function __toString()
     {
-        return 'User';
+//        dump($this);die;
+        return (string)$this->getCurrentTranslation();
     }
 
     /**

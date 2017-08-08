@@ -53,12 +53,16 @@ class Area
         $this->setCreated(new \DateTime('now'));
     }
 
+    public function getCurrentTranslation()
+    {
+        return $this->getTranslations()->last();
+
+    }
+
     function __toString()
     {
         return (string)$this->getCurrentTranslation();
     }
-
-
     /**
      * @return mixed
      */

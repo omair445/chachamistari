@@ -49,14 +49,8 @@ class CategoryController extends DefaultController
                             'cat_icon' => $category->getCatIconPath(),
                         );
                     }
-
-
                 }
                 return new Response(json_encode($this->CategoryListingResponse($locale, 0,$response), JSON_PRETTY_PRINT), 200);
-
-
-
-
             } else {
                 return new Response(json_encode($this->CategoryListingResponse($locale, 2,[]), JSON_PRETTY_PRINT), 400);
             }

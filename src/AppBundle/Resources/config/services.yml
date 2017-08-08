@@ -34,3 +34,9 @@ services:
         arguments: [~, AppBundle\Entity\Area, SonataAdminBundle:CRUD]
         tags:
             - { name: sonata.admin, manager_type: orm, group: admin, label: Area }
+
+    app.admin.company:
+        class: AppBundle\Admin\CompanyAdmin
+        arguments: [~, AppBundle\Entity\Company, SonataAdminBundle:CRUD]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: Company }

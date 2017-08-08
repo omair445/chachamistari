@@ -629,4 +629,171 @@ class DefaultController extends Controller
         return $response;
     }
 
+    /**
+     * @param $locale
+     * @param int $response_status
+     * @param $object
+     * @return array
+     */
+    public function ratingResponse($locale, $response_status = 0, $object)
+    {
+        $responseObj = $this->getDoctrine()->getRepository("AppBundle:ServiceResponses")->findBy(array(
+            'serviceType' => 'rate_company'
+        ));
+        $locales = null;
+        $output = [];
+        $response = array();
+        foreach ($responseObj as $obj) {
+            $trans = $obj->getTranslations();
+            $totalArrayLocales = [$locale];
+            $locales = $totalArrayLocales;
+            foreach ($locales as $locale1) {
+                $output = $trans->get($locale1);
+            }
+        }
+        if (!empty($output)) {
+            if ($response_status == 0) {
+                $response = array(
+                    'result' => 1,
+                    'message' => $output->getSuccessMsg(),
+                    'data' => $object
+                );
+            } elseif ($response_status == 1) {
+                $response = array(
+                    'result' => 0,
+                    'message' => $output->getFailureMsg(),
+                    'data' => $object
+
+                );
+            } elseif ($response_status == 2) {
+                $response = array(
+                    'data' => array(
+                        'result' => 0,
+                        'message' => $output->getFailureMsg1(),
+//                        'u_record' => (object)$object
+                    )
+                );
+            }
+        } else {
+            $response = array(
+                'data' => array(
+                    'result' => 0,
+                    'message' => 'Please add success and failure response messages from admin panel first , service type is area_listing'
+                )
+            );
+        }
+        return $response;
+    }
+
+    /**
+     * @param $locale
+     * @param int $response_status
+     * @param $object
+     * @return array
+     */
+    public function companyListingResponse($locale, $response_status = 0, $object)
+    {
+        $responseObj = $this->getDoctrine()->getRepository("AppBundle:ServiceResponses")->findBy(array(
+            'serviceType' => 'company_listing'
+        ));
+        $locales = null;
+        $output = [];
+        $response = array();
+        foreach ($responseObj as $obj) {
+            $trans = $obj->getTranslations();
+            $totalArrayLocales = [$locale];
+            $locales = $totalArrayLocales;
+            foreach ($locales as $locale1) {
+                $output = $trans->get($locale1);
+            }
+        }
+        if (!empty($output)) {
+            if ($response_status == 0) {
+                $response = array(
+                    'result' => 1,
+                    'message' => $output->getSuccessMsg(),
+                    'data' => $object
+                );
+            } elseif ($response_status == 1) {
+                $response = array(
+                    'result' => 0,
+                    'message' => $output->getFailureMsg(),
+                    'data' => $object
+
+                );
+            } elseif ($response_status == 2) {
+                $response = array(
+                    'data' => array(
+                        'result' => 0,
+                        'message' => $output->getFailureMsg1(),
+//                        'u_record' => (object)$object
+                    )
+                );
+            }
+        } else {
+            $response = array(
+                'data' => array(
+                    'result' => 0,
+                    'message' => 'Please add success and failure response messages from admin panel first , service type is company_listing'
+                )
+            );
+        }
+        return $response;
+    }
+
+    /**
+     * @param $locale
+     * @param int $response_status
+     * @param $object
+     * @return array
+     */
+    public function addToFvtResponse($locale, $response_status = 0, $object)
+    {
+        $responseObj = $this->getDoctrine()->getRepository("AppBundle:ServiceResponses")->findBy(array(
+            'serviceType' => 'add_company_to_fvts'
+        ));
+        $locales = null;
+        $output = [];
+        $response = array();
+        foreach ($responseObj as $obj) {
+            $trans = $obj->getTranslations();
+            $totalArrayLocales = [$locale];
+            $locales = $totalArrayLocales;
+            foreach ($locales as $locale1) {
+                $output = $trans->get($locale1);
+            }
+        }
+        if (!empty($output)) {
+            if ($response_status == 0) {
+                $response = array(
+                    'result' => 1,
+                    'message' => $output->getSuccessMsg()
+                );
+            } elseif ($response_status == 1) {
+                $response = array(
+                    'result' => 0,
+                    'message' => $output->getFailureMsg(),
+                    'data' => $object
+
+                );
+            } elseif ($response_status == 2) {
+                $response = array(
+                    'data' => array(
+                        'result' => 0,
+                        'message' => $output->getFailureMsg1(),
+//                        'u_record' => (object)$object
+                    )
+                );
+            }
+        } else {
+            $response = array(
+                'data' => array(
+                    'result' => 0,
+                    'message' => 'Please add success and failure response messages from admin panel first , service type is (add_company_to_fvts)'
+                )
+            );
+        }
+        return $response;
+    }
+
 }

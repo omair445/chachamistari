@@ -102,9 +102,16 @@ class Category
         $this->catIconPath = $catIconPath;
     }
 
+
+    public function getCurrentTranslation()
+    {
+        return $this->getTranslations()->last();
+
+    }
+
     function __toString()
     {
-     return "Category";
+        return (string)$this->getCurrentTranslation();
     }
 
     /**
