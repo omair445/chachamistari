@@ -168,7 +168,7 @@ a2lix_i18n_doctrine:
     manager_registry: doctrine       # [1]
 a2lix_translation_form:
     locale_provider: default       # [1]
-    locales: [en,ar]      # [1-a]
+    locales: [en,ur]      # [1-a]
     default_locale: en               # [1-b]
     required_locales: [en]         # [1-c]
     templating: "A2lixTranslationFormBundle::default.html.twig"      # [2
