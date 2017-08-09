@@ -105,13 +105,25 @@ class Category
 
     public function getCurrentTranslation()
     {
-        return $this->getTranslations()->last();
+        if($this->getTranslations()){
+            return $this->getTranslations()->last();
+        }else{
+            return "Category";
+        }
+//        return $this->getTranslations()->last();
+//        dump($this->getTranslations()->last());die;
 
     }
 
     function __toString()
     {
-        return (string)$this->getCurrentTranslation();
+        if($this->getCurrentTranslation()){
+            return (string)$this->getCurrentTranslation();
+        }else{
+            return "Category";
+        }
+//        return (string)$this->getCurrentTranslation();
+//        dump($this->getCurrentTranslation());die;
     }
 
     /**
@@ -130,20 +142,11 @@ class Category
         $this->isActive = $isActive;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTranslations()
-    {
-        return $this->translations;
-    }
 
-    /**
-     * @param mixed $translations
-     */
-    public function setTranslations($translations)
+
+    function __call($name, $arguments)
     {
-        $this->translations = $translations;
+        // TODO: Implement __call() method.
     }
 
 

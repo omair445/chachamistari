@@ -43,53 +43,10 @@ class CategoryTranslation implements \A2lix\I18nDoctrineBundle\Doctrine\Interfac
         // TODO: Implement __toString() method.
     }
 
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
 
-    /**
-     * @param mixed $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
 
-    /**
-     * @return mixed
-     */
-    public function getLocale()
-    {
-        return $this->locale;
-    }
 
-    /**
-     * @param mixed $locale
-     */
-    public function setLocale($locale)
-    {
-        $this->locale = $locale;
-    }
 
-    /**
-     * @return mixed
-     */
-    public function getTranslatable()
-    {
-        return $this->translatable;
-    }
-
-    /**
-     * @param mixed $translatable
-     */
-    public function setTranslatable($translatable)
-    {
-        $this->translatable = $translatable;
-    }
 
 
 }
