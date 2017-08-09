@@ -796,4 +796,114 @@ class DefaultController extends Controller
         return $response;
     }
 
+
+    /**
+     * @param $locale
+     * @param int $response_status
+     * @param $object
+     * @return array
+     */
+    public function unFvtResponse($locale, $response_status = 0, $object)
+    {
+        $responseObj = $this->getDoctrine()->getRepository("AppBundle:ServiceResponses")->findBy(array(
+            'serviceType' => 'unfvt_company'
+        ));
+        $locales = null;
+        $output = [];
+        $response = array();
+        foreach ($responseObj as $obj) {
+            $trans = $obj->getTranslations();
+            $totalArrayLocales = [$locale];
+            $locales = $totalArrayLocales;
+            foreach ($locales as $locale1) {
+                $output = $trans->get($locale1);
+            }
+        }
+        if (!empty($output)) {
+            if ($response_status == 0) {
+                $response = array(
+                    'result' => 1,
+                    'message' => $output->getSuccessMsg()
+                );
+            } elseif ($response_status == 1) {
+                $response = array(
+                    'result' => 0,
+                    'message' => $output->getFailureMsg(),
+                    'data' => $object
+
+                );
+            } elseif ($response_status == 2) {
+                $response = array(
+                    'data' => array(
+                        'result' => 0,
+                        'message' => $output->getFailureMsg1(),
+//                        'u_record' => (object)$object
+                    )
+                );
+            }
+        } else {
+            $response = array(
+                'data' => array(
+                    'result' => 0,
+                    'message' => 'Please add success and failure response messages from admin panel first , service type is (unfvt_company)'
+                )
+            );
+        }
+        return $response;
+    }
+
+    /**
+     * @param $locale
+     * @param int $response_status
+     * @param $object
+     * @return array
+     */
+    public function fvtCompaniesResponse($locale, $response_status = 0, $object)
+    {
+        $responseObj = $this->getDoctrine()->getRepository("AppBundle:ServiceResponses")->findBy(array(
+            'serviceType' => 'get_favorite_listing'
+        ));
+        $locales = null;
+        $output = [];
+        $response = array();
+        foreach ($responseObj as $obj) {
+            $trans = $obj->getTranslations();
+            $totalArrayLocales = [$locale];
+            $locales = $totalArrayLocales;
+            foreach ($locales as $locale1) {
+                $output = $trans->get($locale1);
+            }
+        }
+        if (!empty($output)) {
+            if ($response_status == 0) {
+                $response = array(
+                    'result' => 1,
+                    'message' => $output->getSuccessMsg(),
+                     'data' => $object
+                );
+            } elseif ($response_status == 1) {
+                $response = array(
+                    'result' => 0,
+                    'message' => $output->getFailureMsg(),
+                    'data' => $object
+
+                );
+            } elseif ($response_status == 2) {
+                $response = array(
+                    'data' => array(
+                        'result' => 0,
+                        'message' => $output->getFailureMsg1(),
+                    )
+                );
+            }
+        } else {
+            $response = array(
+                'data' => array(
+                    'result' => 0,
+                    'message' => 'Please add success and failure response messages from admin panel first , service type is (unfvt_company)'
+                )
+            );
+        }
+        return $response;
+    }
 }
