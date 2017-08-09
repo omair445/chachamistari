@@ -1,11 +1,10 @@
-Khidmat Group (IOS Web Services)
+Khidmat Group (IOS Web Services and Includes Admin Panel Based on Sonata Framework)
 ========================
 
-Welcome to the Symfony Standard Edition - a fully-functional Symfony
-application that you can use as the skeleton for your new applications.
+Author: Omair Afzal
 
-For details on how to download and get started with Symfony, see the
-[Installation][1] chapter of the Symfony Documentation.
+Code copyrights: Bilal Tahir ISO 100023
+
 
 What's inside?
 --------------
@@ -59,7 +58,7 @@ It comes pre-configured with the following bundles:
 All libraries and bundles included in the Symfony Standard Edition are
 released under the MIT or BSD license.
 
-Enjoy!
+
 
 [1]:  https://symfony.com/doc/3.3/setup.html
 [6]:  https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/index.html
