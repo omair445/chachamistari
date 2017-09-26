@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+   <head>
+           <meta charset="UTF-8" />
+           <title>{% block title %}Register{% endblock %}</title>
+           {% block stylesheets %}{% endblock %}
+     <link rel="stylesheet" href="{{ asset('company_register_asset/custom.css') }}" />
+      <script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+           <script src = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+       </head>
+
+   <body>
+<div class="container">
+    <form id="contact" action="#" method="post">
+        <h3>Register Company </h3>
+        {#<h4>Contact us for custom quote</h4>#}
+        <fieldset>
+            <input placeholder="Company Name" type="text" tabindex="1" required autofocus>
+        </fieldset>
+        <fieldset>
+            <input placeholder="Company Phone Number" type="tel" tabindex="3" required>
+        </fieldset>
+        <fieldset>
+    <div class="form-group" id="loc_address_container">
+                <div class="sonata-ba-field sonata-ba-field-standard-natural">
+                    <input placeholder=" Location Address" type="text" id="address" name="loc_address" class="form-control" onkeyup="codeAddress()" required value="">
+                    <input type="hidden" id="latitude" name="loc_lat" class="form-control" value="">
+                    <input type="hidden" id="longitude" name="loc_lng" class="form-control" value="">
+                </div>
+            </div>
+        </fieldset>
+            <div style="display: none" class="form-group" id="loc_state_container">
+                <label class=" control-label" for="loc_state">
+                    Location Postal Code <required>*</required>
+                </label>
+                <div class="sonata-ba-field sonata-ba-field-standard-natural">
+                    <input type="text" id="loc_postal" name="loc_postal" class="form-control" required value="">
+                </div>
+            </div>
+        <fieldset>
+        <div class="form-group" id="loc_city_container">
+                <div class="sonata-ba-field sonata-ba-field-standard-natural">
+                    <input placeholder="Location City" type="text" id="loc_city" name="loc_city" class="form-control" required value="">
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <div class="form-group" id="loc_state_container">
+
+                <div class="sonata-ba-field sonata-ba-field-standard-natural">
+                    <input placeholder="Location State" type="text" id="loc_state" name="loc_state" class="form-control" required value="">
+                </div>
+            </div>
+            </fieldset>
+
+            <fieldset>
+            <div class="form-group" id="loc_country_container">
+                <div class="sonata-ba-field sonata-ba-field-standard-natural">
+                    <input type="text" placeholder="Location Country" id="loc_country" name="loc_country" class="form-control" required value="">
+                </div>
+            </div>
+        </fieldset>
+            <fieldset>
+                <input placeholder="Latitude" id="lat" type="tel" tabindex="3" required>
+            </fieldset> <fieldset>
+                <input placeholder="Longitude" id="long" type="tel" tabindex="3" required>
+            </fieldset>
+        <fieldset>
+            <div class="form-group" id="loc_address_container">
+                <label class=" control-label" for="loc_address">
+                    Adjust Pin On Map
+                </label>
+                <div class="sonata-ba-field sonata-ba-field-standard-natural">
+                    <div id="map_canvas" style="height:150px;"></div>
+                </div>
+            </div>
+     <button name="submit" type="submit" id="contact-submit" data-submit="...Sending">Submit</button>
+        </fieldset>
+
+        <p class="copyright">Powered By TEAM CHACHA MISTARI</p>
+    </form>
+</div>
+  
+   </body>
+
+{#       <script src = "{{ asset('company_register_asset/google_map_auto_complete.js') }}"></script>#}
+<script src="https://maps.google.com/maps/api/js?sensor=false&libraries=geometry&v=3.22&key=AIzaSyAiIGpHBeU-KTQKEk8CblpKYkElTk_j53Y"></script>
+<script>
+
+
+    //Maps
+    var geocoder;
+    var map;
+    var marker;
+    var infowindow = new google.maps.InfoWindow({
+        size: new google.maps.Size(150, 50)
+    });
+
+    function initialize() {
+        geocoder = new google.maps.Geocoder();
+        var latlng = new google.maps.LatLng(-34.397, 150.644);
+        var mapOptions = {
+            zoom: 4,
+            center: latlng,
+            draggable: true,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        }
+        map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+        google.maps.event.addListener(map, 'click', function() {
+            infowindow.close();
+        });
+        marker = new google.maps.Marker({
+            position: latlng,
+            map: map,
+            draggable: true,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+        google.maps.event.addListener(marker, 'dragend', function() {
+            geocodePosition(marker.getPosition());
+        });
+
+    }
+
+    function geocodePosition(pos) {
+        geocoder.geocode({
+            latLng: pos
+        }, function(responses) {
+            console.log(responses);
+            if (responses && responses.length > 0) {
+                marker.formatted_address = responses[0].formatted_address;
+                document.getElementById('address').value = marker.formatted_address;
+                codeAddress();
+            } else {
+                marker.formatted_address = 'Cannot determine address at this location.';
+            }
+            infowindow.setContent(marker.formatted_address + "<br>coordinates: " + marker.getPosition().toUrlValue(6));
+            infowindow.open(map, marker);
+        });
+    }
+
+    function codeAddress() {
+        var address = document.getElementById('address').value;
+        if(!address){
+            address = 'united states of america';
+        }
+        if(address.length < 3){
+            return false;
+        }else{
+            if(address != 'united states of america') {
+                map.setZoom(10);
+            }
+        }
+        if(!geocoder){
+            return false;
+        }
+        geocoder.geocode({
+            'address': address
+        }, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                map.setCenter(results[0].geometry.location);
+                if (marker) {
+                    marker.setMap(null);
+                    if (infowindow) infowindow.close();
+                }
+                marker = new google.maps.Marker({
+                    map: map,
+                    draggable: true,
+                    position: results[0].geometry.location
+                });
+                google.maps.event.addListener(marker, 'dragend', function() {
+                    geocodePosition(marker.getPosition());
+                });
+                google.maps.event.addListener(marker, 'click', function() {
+                    if (marker.formatted_address) {
+                        infowindow.setContent(marker.formatted_address + "<br>coordinates: " + marker.getPosition().toUrlValue(6));
+                    } else {
+                        infowindow.setContent(address + "<br>coordinates: " + marker.getPosition().toUrlValue(6));
+                    }
+                    $('#latitude').val(marker.getPosition().lat());
+                    $('#longitude').val(marker.getPosition().lng());
+
+                    var arrAddress = results[0].address_components;
+                    var itemRoute='';
+                    var itemLocality='';
+                    var itemCountry='';
+                    var itemPc='';
+                    var itemSnumber='';
+                    var itemProvince = '';
+
+// iterate through address_component array
+                    console.log(arrAddress)
+                    $.each(arrAddress, function (i, address_component) {
+                        console.log('address_component:'+i);
+                        console.log(address_component.long_name);
+                        if (address_component.types[0] == "route"){
+                            itemRoute = address_component.long_name;
+                        }
+
+                        if (address_component.types[0] == "locality"){
+                            itemLocality = address_component.long_name;
+                        }
+
+                        if (address_component.types[0] == "country"){
+                            itemCountry = address_component.long_name;
+                        }
+
+                        if (address_component.types[0] == "postal_code"){
+                            itemPc = address_component.long_name;
+                        }
+
+                        if (address_component.types[0] == "street_number"){
+                            itemSnumber = address_component.long_name;
+                        }
+                        if(address_component.types[0] == "administrative_area_level_1"){
+                            itemProvince = address_component.long_name;
+                        }
+                        //return false; // break the loop
+                    });
+
+                    if(itemLocality != ''){
+                        $('#loc_city').val(itemLocality);
+                    }
+                    if(itemCountry != ''){
+                        $('#loc_country').val(itemCountry);
+                    }
+                    if(itemCountry != ''){
+                        $('#loc_country').val(itemCountry);
+                    }
+                    if(itemProvince != ''){
+                        $('#loc_state').val(itemProvince)
+                    }
+                    if(itemPc != ''){
+                        console.log(itemPc)
+                        $('#loc_postal').val(itemPc);
+                    }
+                });
+                google.maps.event.trigger(marker, 'click');
+            } else {
+                console.log('Geocode was not successful for the following reason: ' + status);
+            }
+        });
+        $("#lat").val(marker.getPosition().lat());
+        $("#long").val(marker.getPosition().lng());
+//        alert();
+
+//        marker.getPosition().long();
+    }
+
+    google.maps.event.addDomListener(window, "load", initialize);
+
+</script>
+</html>
