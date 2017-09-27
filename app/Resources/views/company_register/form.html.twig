@@ -200,9 +200,10 @@
                     } else {
                         infowindow.setContent(address + "<br>coordinates: " + marker.getPosition().toUrlValue(6));
                     }
-                    $('#latitude').val(marker.getPosition().lat());
-                    $('#longitude').val(marker.getPosition().lng());
-
+//                    $('#latitude').val(marker.getPosition().lat());
+//                    $('#longitude').val(marker.getPosition().lng());
+                    $("#lat").val(marker.getPosition().lat());
+                    $("#long").val(marker.getPosition().lng());
                     var arrAddress = results[0].address_components;
                     var itemRoute = '';
                     var itemLocality = '';
@@ -259,12 +260,13 @@
                     }
                 });
                 google.maps.event.trigger(marker, 'click');
+                $("#lat").val(marker.getPosition().lat());
+                $("#long").val(marker.getPosition().lng());
             } else {
                 console.log('Geocode was not successful for the following reason: ' + status);
             }
         });
-        $("#lat").val(marker.getPosition().lat());
-        $("#long").val(marker.getPosition().lng());
+
 //        alert();
 
 //        marker.getPosition().long();
