@@ -32,7 +32,7 @@
             <input placeholder="Company Name" name="name" type="text" tabindex="1" required autofocus>
         </fieldset>
         <fieldset>
-            <input placeholder="Company Phone Number" name="number" type="tel" tabindex="3" required>
+            <input placeholder="Company Phone Number" name="number" type="number" tabindex="3" required>
         </fieldset>
 
         <fieldset>
@@ -297,6 +297,7 @@
             error: function (data) {
                 hideLoader();
                 showError();
+                $('#contact')[0].reset();
             }
         });
 
