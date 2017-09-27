@@ -44,10 +44,10 @@
             </select>
         </fieldset>
         <fieldset>
-            <div onmouseleave="codeAddress()" onmouseenter="codeAddress()" onmouseup="codeAddress()" onmousedown="codeAddress()" class="form-group" id="loc_address_container">
+            <div class="form-group" id="loc_address_container">
                 <div class="sonata-ba-field sonata-ba-field-standard-natural">
                     <input placeholder=" Location Address" type="text" id="address" name="loc_address"
-                           class="form-control" onkeydown="codeAddress()" onchange="codeAddress()" onclick="codeAddress()" onselect="codeAddress()" onautocomplete="codeAddress()"  required value="">
+                           class="form-control" onkeydown="codeAddress()" onchange="codeAddress()" onclick="codeAddress()" required value="">
                 </div>
             </div>
         </fieldset>
@@ -274,6 +274,7 @@
     var autocomplete = new google.maps.places.Autocomplete($("#address")[0], {});
     google.maps.event.addListener(autocomplete, 'place_changed', function () {
         var place = autocomplete.getPlace();
+        codeAddress();
         console.log(place.address_components);
     });
     $('select').select2({
@@ -326,5 +327,9 @@ function hideLoader() {
         }
     });
 
+    $("#address").on('change keyup paste', function () {
+       codeAddress();
+        console.log("Change Pate or KeyUp Called ");
+    });
 </script>
 </html>
