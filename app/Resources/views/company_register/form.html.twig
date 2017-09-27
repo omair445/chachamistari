@@ -4,6 +4,7 @@
 <head>
            
     <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
            <title>{% block title %}Register{% endblock %}</title>
            {% block stylesheets %}{% endblock %}
      
@@ -21,6 +22,9 @@
 
    
 <body>
+<div class="container_outer">
+
+
 <div class="container">
     <form id="contact">
         <h3>Register Company </h3>
@@ -94,6 +98,7 @@
 
         <p class="copyright">Powered By TEAM CHACHA MISTARI</p>
     </form>
+</div>
 </div>
   
   <div style="display: none" class="loading">Loading</div>
@@ -311,6 +316,14 @@ function showLoader() {
 function hideLoader() {
     $(".loading").fadeOut();
 }
+
+    $('#contact').on('keyup keypress', function(e) {
+        var keyCode = e.keyCode || e.which;
+        if (keyCode === 13) {
+            e.preventDefault();
+            return false;
+        }
+    });
 
 </script>
 </html>
