@@ -83,6 +83,7 @@ fieldset {
 #contact input[type="number"]:hover,
 #contact input[type="tel"]:hover,
 #contact input[type="url"]:hover
+#contact input[type="time"]:hover
 ,
 #contact textarea:hover {
     -webkit-transition: border-color 0.3s ease-in-out;
@@ -143,6 +144,7 @@ fieldset {
 :-ms-input-placeholder {
     color: #888;
 }
+
 /* Absolute Center Spinner */
 .loading {
     position: fixed;

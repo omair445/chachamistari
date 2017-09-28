@@ -94,6 +94,117 @@ class Company
     protected $person;
 
     /**
+     * @ORM\Column(type="text",nullable=true)
+     */
+    protected $description;
+
+    /**
+     * @ORM\Column(type="time",nullable=true)
+     */
+    protected $startTime;
+
+    /**
+     * @ORM\Column(type="time",nullable=true)
+     */
+    protected $endTime;
+
+    /**
+     * @ORM\Column(type="string",nullable=true)
+     */
+    protected $vistingCardImageUrl;
+
+    /**
+     * @ORM\Column(type="integer",nullable=true)
+     */
+    protected $shopage;
+
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\CompanyOwner",inversedBy="id")
+     */
+    protected $owner;
+    /**
+     * @return mixed
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param mixed $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStartTime()
+    {
+        return $this->startTime;
+    }
+
+    /**
+     * @param mixed $startTime
+     */
+    public function setStartTime($startTime)
+    {
+        $this->startTime = $startTime;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEndTime()
+    {
+        return $this->endTime;
+    }
+
+    /**
+     * @param mixed $endTime
+     */
+    public function setEndTime($endTime)
+    {
+        $this->endTime = $endTime;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVistingCardImageUrl()
+    {
+        return $this->vistingCardImageUrl;
+    }
+
+    /**
+     * @param mixed $vistingCardImageUrl
+     */
+    public function setVistingCardImageUrl($vistingCardImageUrl)
+    {
+        $this->vistingCardImageUrl = $vistingCardImageUrl;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getShopage()
+    {
+        return $this->shopage;
+    }
+
+    /**
+     * @param mixed $shopage
+     */
+    public function setShopage($shopage)
+    {
+        $this->shopage = $shopage;
+    }
+
+
+    /**
      * @return mixed
      */
     public function getTwitter()
@@ -365,6 +476,22 @@ class Company
     public function setService($service)
     {
         $this->service = $service;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOwner()
+    {
+        return $this->owner;
+    }
+
+    /**
+     * @param mixed $owner
+     */
+    public function setOwner($owner)
+    {
+        $this->owner = $owner;
     }
 
 

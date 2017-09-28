@@ -299,4 +299,166 @@ class CompanyController extends DefaultController
 
     }
 
+
+    /**
+     * @param Request $request
+     * @Route("/image/upload",name="uploadImage")
+     */
+    public function uploadImage(Request $request)
+    {
+//        sleep(2);
+        $object = $this->upload_image($request, 'company');
+        $host = $request->getSchemeAndHttpHost();
+        $basePath = null;
+        if ($host == "http://localhost") {
+            $basePath = $host . '/khidmat_group/web';
+        } else {
+            $basePath = $host;
+        }
+        if ($object[0] == 1) {
+            $arr = array(
+                'status' => 200,
+                'msg' => 'image uploaded with success',
+                'path' => $basePath . '/' . $object[1]
+            );
+        } else {
+            $arr = array(
+                'status' => 500,
+                'msg' => 'Failed to upload Image ',
+                'path' => null
+            );
+        }
+        return new Response(json_encode($arr), 200);
+
+
+    }
+
+
+    protected function upload_image(Request $request, $image_type)
+    {
+        $path = "images/";
+
+        switch ($image_type) {
+            case "company":
+                $path = "images/company/";
+                break;
+
+
+        }
+
+        $filename = $_FILES["file"]["name"];
+        $file_basename = substr($filename, 0, strripos($filename, '.')); // get file extention
+        $file_ext = substr($filename, strripos($filename, '.')); // get file name
+        $filesize = $_FILES["file"]["size"];
+        $allowed_file_types = array('.png', '.jpg', '.jpeg', '.gif');
+
+        if (in_array($file_ext, $allowed_file_types) && ($filesize < 2000000)) {
+            // Rename file
+            $currentTimeMicro = round(microtime(TRUE));
+            $newfilename = md5($file_basename) . mt_rand(10000, 999999) . $currentTimeMicro . $file_ext;
+            $newfilename2 = md5($file_basename) . mt_rand(10000, 999999) . $currentTimeMicro . $file_ext;
+            $haveUrlofThumbnailofUploadImage = $this->makeThumbnail('file', $path, $newfilename, false, $path, 300, 300);
+            $checkPath = $path . $newfilename;
+
+
+            return [
+                1,
+                $path . $newfilename,
+//                    $haveUrlofThumbnailofUploadImage
+            ];
+
+
+        } elseif (empty($file_basename)) {
+            return [
+                0,
+                'please select file'
+            ];
+        } elseif ($filesize > 200000000) {
+            return [
+                0,
+                'image is large'
+            ];
+        } else {
+            return [
+                0,
+                'invalid type'
+            ];
+        }
+    }
+
+    /**
+     * @param $field_name
+     * @param $target_folder
+     * @param $file_name
+     * @param $thumb
+     * @param $thumb_folder
+     * @param $thumb_width
+     * @param $thumb_height
+     * @return bool|string
+     */
+    protected function makeThumbnail($field_name, $target_folder, $file_name, $thumb, $thumb_folder, $thumb_width, $thumb_height)
+    {
+
+        $target_path = $target_folder;
+        $thumb_path = $thumb_folder . "/";
+
+        $filename_err = explode(".", $_FILES[$field_name]['name']);
+        $filename_err_count = count($filename_err);
+        $file_ext = $filename_err[$filename_err_count - 1];
+        if ($file_name != '') {
+            $fileName = $file_name;
+        } else {
+            $fileName = $_FILES[$field_name]['name'];
+        }
+
+        $upload_image = $target_path . basename($fileName);
+
+        if (move_uploaded_file($_FILES[$field_name]['tmp_name'], $upload_image)) {
+            if ($thumb == TRUE) {
+                $thumbnail = $thumb_path . $fileName;
+                list($width, $height) = getimagesize($upload_image);
+                $thumb_create = imagecreate($thumb_width, $thumb_height);
+                switch ($file_ext) {
+                    case 'jpg':
+                        $source = imagecreatefromjpeg($upload_image);
+                        break;
+                    case 'jpeg':
+                        $source = imagecreatefromjpeg($upload_image);
+                        break;
+                    case 'png':
+                        $source = imagecreatefrompng($upload_image);
+                        break;
+                    case 'gif':
+                        $source = imagecreatefromgif($upload_image);
+                        break;
+                    default:
+                        $source = imagecreatefromjpeg($upload_image);
+                }
+
+                imagecopyresized($thumb_create, $source, 0, 0, 0, 0, $thumb_width, $thumb_height, $width, $height);
+                switch ($file_ext) {
+                    case 'jpg' || 'jpeg':
+                        imagejpeg($thumb_create, $thumbnail, 100);
+                        break;
+                    case 'png':
+                        imagepng($thumb_create, $thumbnail, 100);
+                        break;
+
+                    case 'gif':
+                        imagegif($thumb_create, $thumbnail, 100);
+                        break;
+                    default:
+                        imagejpeg($thumb_create, $thumbnail, 100);
+                }
+
+            }
+            $haveThumbUrl = $target_path . "thumb/" . $fileName;
+            return $haveThumbUrl;
+
+        } else {
+            return FALSE;
+        }
+
+    }
+
 }

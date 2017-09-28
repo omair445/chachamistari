@@ -9,6 +9,7 @@
            {% block stylesheets %}{% endblock %}
      
     <link rel="stylesheet" href="{{ asset('company_register_asset/custom.css') }}"/>
+    <link rel="stylesheet" href="http://www.dropzonejs.com/css/dropzone.css?v=1497966187"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
       
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -17,7 +18,28 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="{{ asset('company_register_asset/dropzone/dropzone.js') }}"></script>
+<style>
 
+    #dropzone {
+        margin-bottom: 3rem; }
+
+    .dropzone {
+        border: 2px dashed #0087F7;
+        border-radius: 5px;
+        background: white; }
+    .dropzone .dz-message {
+        font-weight: 400; }
+    .dropzone .dz-message .note {
+        font-size: 0.8em;
+        font-weight: 200;
+        display: block;
+        margin-top: 1.4rem; }
+
+    *, *:before, *:after {
+        box-sizing: border-box; }
+
+</style>
 </head>
 
    
@@ -25,66 +47,72 @@
 <div class="container_outer">
 
 
-<div class="container">
-    <form id="contact">
-        <h3>Register Company </h3>
-        <fieldset>
-            <input placeholder="Company Name" name="name" type="text" tabindex="1" required autofocus>
-        </fieldset>
-        <fieldset>
-            <input placeholder="Company Phone Number" name="number" type="number" tabindex="3" required>
-        </fieldset>
+    <div class="container">
+        <form id="contact">
+            <h3>Register Company </h3>
+            <fieldset>
+                <input placeholder="Company Name" name="name" type="text" tabindex="1" required autofocus>
+            </fieldset>
+            <fieldset>
+                <input placeholder="Company Phone Number" name="number" type="number" tabindex="3" required>
+            </fieldset>
 
-        <fieldset>
-            <select required style="width: 100%" class="form-group" name="category">
+            <fieldset>
+                <input placeholder="Company Description" name="description" type="text" tabindex="3">
+            </fieldset>
 
-                {% for category in categories %}
-                    <option value="{{ category['id'] }}">{{ category['name'] }}</option>
-                {% endfor %}
-            </select>
-        </fieldset>
-        <fieldset>
-            <div class="form-group" id="loc_address_container">
-                <div class="sonata-ba-field sonata-ba-field-standard-natural">
-                    <input placeholder=" Location Address" type="text" id="address" name="loc_address"
-                           class="form-control" onkeydown="codeAddress()" onchange="codeAddress()" onclick="codeAddress()" required value="">
+            <fieldset>
+                <input placeholder="Opening Time" name="openingTime" type="time" tabindex="3" required>
+            </fieldset>
+
+            <fieldset>
+                <input placeholder="Closing Time" name="closingTime" type="time" tabindex="3" required>
+            </fieldset>
+
+
+            <fieldset>
+                <input placeholder="Facebook Page " name="faceBookUrl" type="text" tabindex="3">
+            </fieldset>
+
+            <fieldset>
+                <input placeholder="Shop Age" name="shopAge" type="number" tabindex="3">
+            </fieldset>
+            <fieldset>
+                <select required style="width: 100%" class="form-group" name="category">
+
+                    {% for category in categories %}
+                        <option value="{{ category['id'] }}">{{ category['name'] }}</option>
+                    {% endfor %}
+                </select>
+            </fieldset>
+            <fieldset>
+                <div class="form-group" id="loc_address_container">
+                    <div class="sonata-ba-field sonata-ba-field-standard-natural">
+                        <input placeholder=" Location Address" type="text" id="address" name="loc_address"
+                               class="form-control" onkeydown="codeAddress()" onchange="codeAddress()"
+                               onclick="codeAddress()" required value="">
+                    </div>
+                </div>
+            </fieldset>
+
+            <div id="dropzone">
+                <div action="{{ path('uploadImage') }}" class="dropzone needsclick dz-clickable"  id="my-awesome-dropzone">
+
+                    <div class="dz-message needsclick">
+                        Drop files here or click to upload.<br>
+                        <span class="note needsclick">Or Tap here to capture Image using Phone Camera</span>
+                    </div>
+
                 </div>
             </div>
-        </fieldset>
+            <input type="hidden" name="company_image_url" id="c_image">
+            <fieldset>
+                <input placeholder="Latitude" name="lat" id="lat" type="text" tabindex="3" required>
+            </fieldset>
+            <fieldset>
+                <input placeholder="Longitude" name="long" id="long" type="text" tabindex="3" required>
+            </fieldset>
 
-        {#<fieldset>#}
-            {#<div class="form-group" id="loc_city_container">#}
-                {#<div class="sonata-ba-field sonata-ba-field-standard-natural">#}
-                    {#<input placeholder="Location City" type="text" id="loc_city" name="loc_city" class="form-control"#}
-                           {#required value="">#}
-                {#</div>#}
-            {#</div>#}
-        {#</fieldset>#}
-        {#<fieldset>#}
-            {#<div class="form-group" id="loc_state_container">#}
-
-                {#<div class="sonata-ba-field sonata-ba-field-standard-natural">#}
-                    {#<input placeholder="Location State" type="text" id="loc_state" name="loc_state" class="form-control"#}
-                           {#required value="">#}
-                {#</div>#}
-            {#</div>#}
-        {#</fieldset>#}
-
-        {#<fieldset>#}
-            {#<div class="form-group" id="loc_country_container">#}
-                {#<div class="sonata-ba-field sonata-ba-field-standard-natural">#}
-                    {#<input type="text" placeholder="Location Country" id="loc_country" name="loc_country"#}
-                           {#class="form-control" required value="">#}
-                {#</div>#}
-            {#</div>#}
-        {#</fieldset>#}
-        <fieldset>
-            <input  placeholder="Latitude" name="lat" id="lat" type="text" tabindex="3" required>
-        </fieldset>
-        <fieldset>
-            <input  placeholder="Longitude" name="long" id="long" type="text" tabindex="3" required>
-        </fieldset>
-        <fieldset>
             <div class="form-group" id="loc_address_container">
                 <label class=" control-label" for="loc_address">
                     Adjust Pin On Map
@@ -93,15 +121,47 @@
                     <div id="map_canvas" style="height:150px;"></div>
                 </div>
             </div>
-            <button name="submit" type="submit" id="contact-submit" data-submit="...Sending">Create Company</button>
-        </fieldset>
+            <br>
+            <hr>
+            <h3 align="center">Owner Details</h3>
+            <br>
 
-        <p class="copyright">Powered By TEAM CHACHA MISTARI</p>
-    </form>
-</div>
+
+            <fieldset>
+                <input placeholder="Owner Name" name="ownerName" type="text" required tabindex="3">
+            </fieldset>
+            <fieldset>
+                <input placeholder="Phone Number" name="ownerPhone" type="number" required tabindex="3">
+            </fieldset>
+
+            <fieldset>
+                <input placeholder="National Identity Card (CNIC)" name="cnic" type="number" required tabindex="3">
+            </fieldset>
+
+
+            <fieldset>
+                <input placeholder="Email" name="ownerEmail" type="email" tabindex="3">
+            </fieldset>
+
+            <fieldset>
+                <input placeholder="Home Town" name="ownerHomeTown" type="text" tabindex="3">
+            </fieldset>
+
+            <fieldset>
+                <input placeholder="Owner Age " name="ownerAge" type="number" tabindex="3">
+            </fieldset>
+
+
+            <button name="submit" type="submit" id="contact-submit" data-submit="...Sending">Create Company</button>
+
+
+            <p class="copyright">Powered By TEAM CHACHA MISTARI</p>
+        </form>
+
 </div>
   
-  <div style="display: none" class="loading">Loading</div>
+  
+<div style="display: none" class="loading">Loading</div>
 
 
 </body>
@@ -295,33 +355,37 @@
                 hideLoader();
                 showSuccess();
                 $('#contact')[0].reset();
+                window.setTimeout(function(){location.reload()},3000)
 
             },
             error: function (data) {
                 hideLoader();
                 showError();
                 $('#contact')[0].reset();
+                window.setTimeout(function(){location.reload()},3000)
             }
         });
 
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });
-function showSuccess() {
-    toastr.success('Company Registered Successfully', 'Chacha Mistari Says')
-}
-function showError() {
-    toastr.error('Unable to save Company try again with correct values', 'Chacha Mistari Says')
-}
 
-function showLoader() {
-    $(".loading").fadeIn();
-}
+    function showSuccess() {
+        toastr.success('Company Registered Successfully', 'Chacha Mistari Says')
+    }
 
-function hideLoader() {
-    $(".loading").fadeOut();
-}
+    function showError() {
+        toastr.error('Unable to save Company try again with correct values', 'Chacha Mistari Says')
+    }
 
-    $('#contact').on('keyup keypress', function(e) {
+    function showLoader() {
+        $(".loading").fadeIn();
+    }
+
+    function hideLoader() {
+        $(".loading").fadeOut();
+    }
+
+    $('#contact').on('keyup keypress', function (e) {
         var keyCode = e.keyCode || e.which;
         if (keyCode === 13) {
             e.preventDefault();
@@ -330,8 +394,32 @@ function hideLoader() {
     });
 
     $("#address").on('change keyup paste', function () {
-       codeAddress();
+        codeAddress();
         console.log("Change Pate or KeyUp Called ");
     });
+
+    Dropzone.options.myAwesomeDropzone = {
+        paramName: "file", // The name that will be used to transfer the file
+        maxFilesize: 2, // MB
+        maxFiles: 1,
+        capture:true,
+        uploadMultiple: false,
+        init: function() {
+            this.hiddenFileInput.setAttribute("capture", "camera");
+            this.on("maxfilesexceeded", function(file){
+                toastr.error('No more images please', 'Chacha Mistari Says')
+            });
+        },
+        success: function(file, response){
+            var json = jQuery.parseJSON(response);
+
+             console.log(json.path );
+             setCompanyImage(json.path)
+        }
+    };
+
+    function setCompanyImage(value) {
+        $("#c_image").val(value)
+    }
 </script>
 </html>

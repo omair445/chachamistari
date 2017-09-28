@@ -74,3 +74,10 @@ services:
         arguments: [~, AppBundle\Entity\Company, SonataAdminBundle:CRUD]
         tags:
             - { name: sonata.admin, manager_type: orm, group: Company Management, label: Company }
+
+    app.admin.company_owner:
+        class: AppBundle\Admin\CompanyOwnerAdmin
+        arguments: [~, AppBundle\Entity\CompanyOwner, SonataAdminBundle:CRUD]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: Company Management, label: Company Owner }
+        public: true

@@ -10,6 +10,7 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\Company;
+use AppBundle\Entity\CompanyOwner;
 use AppBundle\Entity\CompanyTranslation;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -42,15 +43,52 @@ class MarketingController extends DefaultController
             $address = $request->get('loc_address');
             $lat = $request->get('lat');
             $long = $request->get('long');
+
+            $description = $request->get('description',null);
+            $openingTime = $request->get('openingTime',null);
+            $closingTime = $request->get('closingTime');
+            $facebookUrl = $request->get('faceBookUrl',null);
+            $shopAge= $request->get('shopAge');
+//            owner Data ahead
+            $ownerName = $request->get('ownerName',null);
+            $ownerPhone = $request->get('ownerPhone',null);
+            $cnic = $request->get('cnic',null);
+            $ownerEmail = $request->get('ownerEmail',null);
+            $ownerHomeTown = $request->get('ownerHomeTown',null);
+            $ownerAge = $request->get('ownerAge',null);
             $service = $this->getDoctrine()->getRepository('AppBundle:Category')->find($request->get('category'));
+
+            $owner = new CompanyOwner();
+            $owner->setName($ownerName);
+            $owner->setEmail($ownerEmail);
+            $owner->setAge($ownerAge);
+            $owner->setCnic($cnic);
+            $owner->setHomeTown($ownerHomeTown);
+            $owner->setPhone($ownerPhone);
+            $em->persist($owner);
+            $em->flush();
+
+
+
             $company = new Company();
             $company->setPhone($phone);
             $company->setLat($lat);
             $company->setLongitude($long);
             $company->setService($service);
             $company->setIsActive(false);
+            $company->setDescription($description);
+            $openingTime = new \DateTime($openingTime);
+            $closingTime = new \DateTime($closingTime);
+            $company->setStartTime($openingTime);
+            $company->setEndTime($closingTime);
+            $company->setFacebook($facebookUrl);
+            $company->setShopage($shopAge);
+            $company->setOwner($owner);
             $em->persist($company);
             $em->flush();
+
+
+
             $id = $company->getId();
             $trans = new CompanyTranslation();
             $trans->setLocale('en');
