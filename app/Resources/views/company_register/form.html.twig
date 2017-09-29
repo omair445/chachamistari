@@ -51,24 +51,24 @@
         <form id="contact">
             <h3>Register Company </h3>
             <fieldset>
-                <input placeholder="Company Name" name="name" type="text" tabindex="1" required autofocus>
+                <input placeholder="Company Name *" name="name" type="text" tabindex="1" required autofocus>
             </fieldset>
             <fieldset>
-                <input placeholder="Company Phone Number" name="number" type="number" tabindex="3" required>
-            </fieldset>
-
-            <fieldset>
-                <input placeholder="Company Description" name="description" type="text" tabindex="3">
+                <input placeholder="Company Phone Number *" name="number" type="number" tabindex="3" required>
             </fieldset>
 
             <fieldset>
-                <label for="openingTime">Opening Time</label>
-                <input placeholder="Opening Time" name="openingTime" type="time" tabindex="3" required>
+                <input placeholder="Company Description *" name="description" required type="text" tabindex="3">
             </fieldset>
 
             <fieldset>
-                <label for="closingTime">Closing Time</label>
-                <input placeholder="Closing Time" name="closingTime" type="time" tabindex="3" required>
+                <label for="openingTime">Opening Time *</label>
+                <input placeholder="Opening Time *" name="openingTime" type="time" tabindex="3" required>
+            </fieldset>
+
+            <fieldset>
+                <label for="closingTime">Closing Time *</label>
+                <input placeholder="Closing Time *" name="closingTime" type="time" tabindex="3" required>
             </fieldset>
 
 
@@ -100,10 +100,12 @@
 
             <input type="hidden" name="company_image_url" id="c_image">
             <fieldset>
-                <input placeholder="Latitude" name="lat" id="lat" type="text" tabindex="3" required>
+                <input disabled placeholder="Latitude"  id="lat" type="text" tabindex="3" required>
+                <input  placeholder="Latitude" name="lat" id="lat1" type="hidden" tabindex="3" required>
             </fieldset>
             <fieldset>
-                <input placeholder="Longitude" name="long" id="long" type="text" tabindex="3" required>
+                <input disabled placeholder="Longitude"  id="long" type="text" tabindex="3" required>
+                <input  name="long" id="long1" type="hidden" tabindex="3" required>
             </fieldset>
 
             <div class="form-group" id="loc_address_container">
@@ -131,14 +133,14 @@
 
 
             <fieldset>
-                <input placeholder="Owner Name" name="ownerName" type="text" required tabindex="3">
+                <input placeholder="Owner Name *" name="ownerName" type="text" required tabindex="3">
             </fieldset>
             <fieldset>
-                <input placeholder="Phone Number" name="ownerPhone" type="number" required tabindex="3">
+                <input placeholder="Phone Number *" name="ownerPhone" type="number" required tabindex="3">
             </fieldset>
 
             <fieldset>
-                <input placeholder="National Identity Card (CNIC)" name="cnic" type="number" required tabindex="3">
+                <input placeholder="National Identity Card (CNIC) *" name="cnic" type="number" required tabindex="3">
             </fieldset>
 
 
@@ -162,7 +164,7 @@
         </form>
 
 </div>
-  
+ </div> 
   
 <div style="display: none" class="loading">Loading</div>
 
@@ -325,6 +327,9 @@
                 google.maps.event.trigger(marker, 'click');
                 $("#lat").val(marker.getPosition().lat());
                 $("#long").val(marker.getPosition().lng());
+                $("#lat1").val(marker.getPosition().lat());
+                $("#long1").val(marker.getPosition().lng());
+
             } else {
                 console.log('Geocode was not successful for the following reason: ' + status);
             }
@@ -404,7 +409,7 @@
     Dropzone.options.myAwesomeDropzone = {
         paramName: "file", // The name that will be used to transfer the file
         maxFilesize: 10, // MB
-        maxFiles: 1,
+        maxFiles: 3,
         capture:true,
         uploadMultiple: false,
         init: function() {
