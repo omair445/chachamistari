@@ -62,10 +62,12 @@
             </fieldset>
 
             <fieldset>
+                <label for="openingTime">Opening Time</label>
                 <input placeholder="Opening Time" name="openingTime" type="time" tabindex="3" required>
             </fieldset>
 
             <fieldset>
+                <label for="closingTime">Closing Time</label>
                 <input placeholder="Closing Time" name="closingTime" type="time" tabindex="3" required>
             </fieldset>
 
@@ -95,16 +97,7 @@
                 </div>
             </fieldset>
 
-            <div id="dropzone">
-                <div action="{{ path('uploadImage') }}" class="dropzone needsclick dz-clickable"  id="my-awesome-dropzone">
 
-                    <div class="dz-message needsclick">
-                        Drop files here or click to upload.<br>
-                        <span class="note needsclick">Or Tap here to capture Image using Phone Camera</span>
-                    </div>
-
-                </div>
-            </div>
             <input type="hidden" name="company_image_url" id="c_image">
             <fieldset>
                 <input placeholder="Latitude" name="lat" id="lat" type="text" tabindex="3" required>
@@ -122,6 +115,16 @@
                 </div>
             </div>
             <br>
+            <div id="dropzone">
+                <div action="{{ path('uploadImage') }}" class="dropzone needsclick dz-clickable"  id="my-awesome-dropzone">
+
+                    <div class="dz-message needsclick">
+                        Drop files here or click to upload.<br>
+                        <span class="note needsclick">Or Tap here to capture Image using Phone Camera</span>
+                    </div>
+
+                </div>
+            </div>
             <hr>
             <h3 align="center">Owner Details</h3>
             <br>
@@ -400,7 +403,7 @@
 
     Dropzone.options.myAwesomeDropzone = {
         paramName: "file", // The name that will be used to transfer the file
-        maxFilesize: 2, // MB
+        maxFilesize: 10, // MB
         maxFiles: 1,
         capture:true,
         uploadMultiple: false,
@@ -421,5 +424,38 @@
     function setCompanyImage(value) {
         $("#c_image").val(value)
     }
+
+
+
 </script>
+
+{#<script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>#}
+{#<script src="https://www.gstatic.com/firebasejs/4.3.1/firebase-app.js"></script>#}
+{#<script src="https://www.gstatic.com/firebasejs/4.3.1/firebase-auth.js"></script>#}
+{#<script src="https://www.gstatic.com/firebasejs/4.3.1/firebase-database.js"></script>#}
+{#<script src="https://www.gstatic.com/firebasejs/4.3.1/firebase-messaging.js"></script>#}
+{#<script>#}
+    {#// Initialize Firebase#}
+    {#// #}
+    {#var config = {#}
+        {#apiKey: "AIzaSyBvIlSP9yS52dpriW-NMjcW6m7N50WsdRU",#}
+        {#authDomain: "ddsd-57a4b.firebaseapp.com",#}
+        {#databaseURL: "https://ddsd-57a4b.firebaseio.com/",#}
+{#//        storageBucket: "<BUCKET>.appspot.com",#}
+        {#messagingSenderId: "682986053425",#}
+    {#};#}
+    {#firebase.initializeApp(config);#}
+
+    {#var phoneNumber = "+923333032444";#}
+    {#var appVerifier = window.recaptchaVerifier;#}
+    {#firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)#}
+        {#.then(function (confirmationResult) {#}
+            {#// SMS sent. Prompt user to type the code from the message, then sign the#}
+            {#// user in with confirmationResult.confirm(code).#}
+            {#window.confirmationResult = confirmationResult;#}
+        {#}).catch(function (error) {#}
+        {#// Error; SMS not sent#}
+        {#// ...#}
+    {#});#}
+{#</script>#}
 </html>
