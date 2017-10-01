@@ -427,6 +427,7 @@ class CompanyController extends DefaultController
     public function getCompanyDetails($id = null,$lang = null)
     {
         if ($id || $lang) {
+
             $em = $this->getDoctrine()->getManager();
             $em->getFilters()->disable('oneLocale');
             $response = array();
@@ -438,6 +439,16 @@ class CompanyController extends DefaultController
                 ];
                 return new Response(json_encode($arr));
             }
+            $lastViewCount =  $obj->getViewCount();
+            if($lastViewCount){
+                $newCount = $lastViewCount+1;
+
+            }else{
+                $newCount = 1;
+            }
+            $obj->setViewCount($newCount);
+            $em->persist($obj);
+            $em->flush();
             $ratingObject = $this->getDoctrine()->getRepository("AppBundle:Review")->findOneByCompany($obj);
 //            dump($obj); die ;
             $rating = 0;
@@ -475,6 +486,7 @@ class CompanyController extends DefaultController
                     'c_description' => $obj->getDescription(),
                     'c_opening_time' => $obj->getStartTime(),
                     'c_closing_time' => $obj->getEndTime(),
+                    'view_count' => $obj->getViewCount()
 
                 );
 
@@ -496,6 +508,7 @@ class CompanyController extends DefaultController
                     'c_email' => $obj->getEmail(),
                     'c_person' => $obj->getPerson(),
                     'c_favorite' => (bool)$isFvt,
+                    'view_count' => $obj->getViewCount()
                 );
             }
 
@@ -613,7 +626,8 @@ LIMIT 0 , 20");
                     'c_description' => $obj->getDescription(),
                     'c_opening_time' => $obj->getStartTime(),
                     'c_closing_time' => $obj->getEndTime(),
-                    'cat_id' => $obj->getService()->getId()
+                    'cat_id' => $obj->getService()->getId(),
+                    'view_count' => $obj->getViewCount()
 
                 );
 
@@ -635,7 +649,8 @@ LIMIT 0 , 20");
                     'c_email' => $obj->getEmail(),
                     'c_person' => $obj->getPerson(),
                     'c_favorite' => (bool)$isFvt,
-                    'cat_id' => $obj->getService()->getId()
+                    'cat_id' => $obj->getService()->getId(),
+                    'view_count' => $obj->getViewCount()
                 );
             }
             return $response;
