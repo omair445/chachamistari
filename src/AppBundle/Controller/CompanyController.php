@@ -8,6 +8,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Company;
 use AppBundle\Entity\CompanyFavourite;
 use AppBundle\Entity\Review;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,77 +25,36 @@ class CompanyController extends DefaultController
      * @param null $token
      * @param null $areaId
      * @return Response
-     * @Route("/webservice/company_list/{locationId}/{areaId}/{category}/{lang}/{token}")
+     * @Route("/webservice/company_list")
      */
-    public function getCompanyListing(Request $request, $locationId = null, $category = null, $lang = 'en', $token = null, $areaId = null)
+    public function getCompanyListing(Request $request)
     {
+        $longitude = $request->get('longitude',null);
+        $latitude = $request->get('latitude',null);
+        $radius  = 20;   //miles
+        $category = $request->get('category_id',null);
+        $lang = $request->get('lang',null);
+        $token = $request->get('token',null);
+
         $em = $this->getDoctrine()->getManager();
         $em->getFilters()->disable('oneLocale');
         $response = array();
-        if ($locationId && $category && $lang && $token && $areaId) {
-            $locationObject = $this->getDoctrine()->getRepository("AppBundle:Location")->find($locationId);
-            $categoryObject = $this->getDoctrine()->getRepository("AppBundle:Category")->find($category);
-            $areaObject = $this->getDoctrine()->getRepository("AppBundle:Area")->find($areaId);
+        if ($longitude && $category && $lang && $token && $latitude) {
+
+            $categoryObject = $category;
             $userObject = $this->getUserByToken($token);
-            if ($locationObject && $categoryObject && $areaObject) {
+            if ($categoryObject) {
                 if ($userObject) {
-                    $companyObjects = $this->getDoctrine()->getRepository("AppBundle:Company")->findBy(array(
-                        'location' => $locationObject,
-                        'service' => $categoryObject,
-                        'area' => $areaObject
-                    ));
+                    $companyObjects = $this->getCompaniesByLongLat($longitude, $latitude, $radius);
+                   $companiesByCategory = [];
                     foreach ($companyObjects as $obj) {
-                        $ratingObject = $this->getDoctrine()->getRepository("AppBundle:Review")->findOneByCompany($obj);
-                        $fvtObject = $this->getDoctrine()->getRepository("AppBundle:CompanyFavourite")->findOneByCompany($obj);
-                        $isFvt = false;
-                        if ($fvtObject) {
-                            $isFvt = true;
-                        }
-                        /**
-                         * @var $ratingObject Review
-                         */
-                        $trans = $obj->getTranslations();
-                        $output = $trans->get($lang);
-                        if ($output) {
-                            $response[] = array(
-                                'c_id' => $obj->getId(),
-                                'c_name' => $output->getName(),
-                                'c_address' => $obj->getAddress(),
-                                'rating' => $ratingObject->getPercentage(),
-                                'c_lat' => $obj->getLat(),
-                                'c_long' => $obj->getLongitude(),
-                                'c_phone' => $obj->getPhone(),
-                                'c_picture' => $obj->getImageUrl(),
-                                'c_instagram' => $obj->getInstagram(),
-                                'c_facebook' => $obj->getFacebook(),
-                                'c_twitter' => $obj->getTwitter(),
-                                'c_website' => $obj->getWebsite(),
-                                'c_email' => $obj->getEmail(),
-                                'c_person' => $obj->getPerson(),
-                                'c_favorite' => (bool)$isFvt,
-                            );
-                        } else {
-                            $response[] = array(
-                                'c_id' => $obj->getId(),
-                                'c_name' => $output->getName(),
-                                'c_address' => $obj->getAddress(),
-                                'rating' => $fvtObject->getPercentage(),
-                                'c_lat' => $obj->getLat(),
-                                'c_long' => $obj->getLongitude(),
-                                'c_phone' => $obj->getPhone(),
-                                'c_picture' => $obj->getImageUrl(),
-                                'c_instagram' => $obj->getInstagram(),
-                                'c_facebook' => $obj->getFacebook(),
-                                'c_twitter' => $obj->getTwitter(),
-                                'c_website' => $obj->getWebsite(),
-                                'c_email' => $obj->getEmail(),
-                                'c_person' => $obj->getPerson(),
-                                'c_favorite' => (bool)$isFvt,
-                            );
-                        }
+                       if($obj['cat_id'] == $categoryObject){
+                           $companiesByCategory[] = $obj;
+                       }
                     }
-                    if ($response) {
-                        return new Response(json_encode($this->companyListingResponse($lang, 0, $response), JSON_PRETTY_PRINT), 200);
+
+                    if ($companiesByCategory) {
+                        return new Response(json_encode($this->companyListingResponse($lang, 0, $companiesByCategory), JSON_PRETTY_PRINT), 200);
                     } else {
                         return new Response(json_encode($this->companyListingResponse($lang, 1, $response), JSON_PRETTY_PRINT), 200);
                     }
@@ -223,10 +183,10 @@ class CompanyController extends DefaultController
             $userObject = $this->getUserByToken($token);
             if ($userObject) {
                 $companies = $this->getDoctrine()->getRepository("AppBundle:CompanyFavourite")->findBy(array(
-                   'user' => $userObject
+                    'user' => $userObject
                 ));
                 $response = [];
-                foreach ($companies as $company){
+                foreach ($companies as $company) {
                     $obj = $this->getDoctrine()->getRepository("AppBundle:Company")->find($company->getCompany()->getId());
                     $ratingObject = $this->getDoctrine()->getRepository("AppBundle:Review")->findOneByCompany($obj);
                     $fvtObject = $this->getDoctrine()->getRepository("AppBundle:CompanyFavourite")->findOneByCompany($obj);
@@ -278,9 +238,9 @@ class CompanyController extends DefaultController
                         );
                     }
                 }
-                if($response){
+                if ($response) {
                     return new Response(json_encode($this->fvtCompaniesResponse($lang, 0, $response), JSON_PRETTY_PRINT), 200);
-                }else{
+                } else {
                     return new Response(json_encode($this->fvtCompaniesResponse($lang, 1, $response), JSON_PRETTY_PRINT), 200);
                 }
 
@@ -460,5 +420,234 @@ class CompanyController extends DefaultController
         }
 
     }
+
+    /**
+     * @Route("/company/{id}/{lang}")
+     */
+    public function getCompanyDetails($id = null,$lang = null)
+    {
+        if ($id || $lang) {
+            $em = $this->getDoctrine()->getManager();
+            $em->getFilters()->disable('oneLocale');
+            $response = array();
+            $obj = $this->getDoctrine()->getRepository("AppBundle:Company")->find($id);
+            if(!$obj){
+                $arr = [
+                    'status' => 400,
+                    'msg' =>'Invalid Company id ',
+                ];
+                return new Response(json_encode($arr));
+            }
+            $ratingObject = $this->getDoctrine()->getRepository("AppBundle:Review")->findOneByCompany($obj);
+//            dump($obj); die ;
+            $rating = 0;
+            if($ratingObject ){
+                $rating = $ratingObject->getPercentage();
+            }
+            $fvtObject = $this->getDoctrine()->getRepository("AppBundle:CompanyFavourite")->findOneByCompany($obj);
+            $isFvt = false;
+            if ($fvtObject) {
+                $isFvt = true;
+            }
+            /**
+             * @var $ratingObject
+             * @var $obj Company
+             */
+            $trans = $obj->getTranslations();
+            $output = $trans->get($lang);
+            if ($output) {
+                $response = array(
+                    'c_id' => $obj->getId(),
+                    'c_name' => $output->getName(),
+                    'c_address' => $obj->getAddress(),
+                    'rating' => $rating,
+                    'c_lat' => $obj->getLat(),
+                    'c_long' => $obj->getLongitude(),
+                    'c_phone' => $obj->getPhone(),
+                    'c_picture' => $obj->getImageUrl(),
+                    'c_instagram' => $obj->getInstagram(),
+                    'c_facebook' => $obj->getFacebook(),
+                    'c_twitter' => $obj->getTwitter(),
+                    'c_website' => $obj->getWebsite(),
+                    'c_email' => $obj->getEmail(),
+                    'c_person' => $obj->getPerson(),
+                    'c_favorite' => (bool)$isFvt,
+                    'c_description' => $obj->getDescription(),
+                    'c_opening_time' => $obj->getStartTime(),
+                    'c_closing_time' => $obj->getEndTime(),
+
+                );
+
+                return new Response(json_encode($response));
+            } else {
+                $response = array(
+                    'c_id' => $obj->getId(),
+                    'c_name' => $output->getName(),
+                    'c_address' => $obj->getAddress(),
+                    'rating' => $fvtObject->getPercentage(),
+                    'c_lat' => $obj->getLat(),
+                    'c_long' => $obj->getLongitude(),
+                    'c_phone' => $obj->getPhone(),
+                    'c_picture' => $obj->getImageUrl(),
+                    'c_instagram' => $obj->getInstagram(),
+                    'c_facebook' => $obj->getFacebook(),
+                    'c_twitter' => $obj->getTwitter(),
+                    'c_website' => $obj->getWebsite(),
+                    'c_email' => $obj->getEmail(),
+                    'c_person' => $obj->getPerson(),
+                    'c_favorite' => (bool)$isFvt,
+                );
+            }
+
+
+        }   else{
+                $arr = ['data' => array(
+                    'result' => 0,
+                    'message' => 'Company Id is missing  .(Error Message for Developer only . Translation is not available for Developers Errors)',
+                )];
+                return new Response(json_encode($arr), 400);
+            }
+}
+
+/**
+ * @param $longitude
+ * @param $latitude
+ * @param $radius
+ * @return array
+
+ */
+public function getCompaniesByLongLat($longitude, $latitude, $radius)
+{
+    /**
+     * @var $request Request
+     */
+
+    if ($latitude == NULL || $longitude == NULL || $radius == NULL) {
+        return ['data' => array(
+            'result' => 0,
+            'message' => 'Longitude or Latitude or Radius is missing  .(Error Message for Developer only . Translation is not available for Developers Errors)',
+        )];
+    }
+    $em = $this->getDoctrine()->getManager();
+    $connection = $em->getConnection();
+    $statement = $connection->prepare("SELECT
+  id, (
+    6371 * acos (
+      cos ( radians(:lat) )
+      * cos( radians( lat ) )
+      * cos( radians( longitude ) - radians(:long) )
+      + sin ( radians(:lat) )
+      * sin( radians( lat ) )
+    )
+  ) AS distance
+FROM company
+HAVING distance < :distance
+ORDER BY distance
+LIMIT 0 , 20");
+    $statement->bindValue('lat', $latitude);
+    $statement->bindValue('long', $longitude);
+    $statement->bindValue('distance', $radius);
+    $statement->execute();
+    $results = $statement->fetchAll();
+//    dump($results);die;
+    $companyObjects = [];
+    foreach ($results as $result) {
+        $companyObjects[] = $this->getCompanyDetailsInternal($result['id'],'en');
+    }
+     return $companyObjects;
+}
+
+
+    /**
+     * @param null $id
+     * @param null $lang
+     */
+    public function getCompanyDetailsInternal($id = null,$lang = null)
+    {
+        if ($id || $lang) {
+            $em = $this->getDoctrine()->getManager();
+//            $em->getFilters()->disable('oneLocale');
+            $response = array();
+            $obj = $this->getDoctrine()->getRepository("AppBundle:Company")->find($id);
+            if(!$obj){
+                $arr = [
+                    'status' => 400,
+                    'msg' =>'Invalid Company id ',
+                ];
+                return new Response(json_encode($arr));
+            }
+            $ratingObject = $this->getDoctrine()->getRepository("AppBundle:Review")->findOneByCompany($obj);
+//            dump($obj); die ;
+            $rating = 0;
+            if($ratingObject ){
+                $rating = $ratingObject->getPercentage();
+            }
+            $fvtObject = $this->getDoctrine()->getRepository("AppBundle:CompanyFavourite")->findOneByCompany($obj);
+            $isFvt = false;
+            if ($fvtObject) {
+                $isFvt = true;
+            }
+            /**
+             * @var $ratingObject
+             * @var $obj Company
+             */
+            $trans = $obj->getTranslations();
+            $output = $trans->get($lang);
+            if ($output) {
+                $response = array(
+                    'c_id' => $obj->getId(),
+                    'c_name' => $output->getName(),
+                    'c_address' => $obj->getAddress(),
+                    'rating' => $rating,
+                    'c_lat' => $obj->getLat(),
+                    'c_long' => $obj->getLongitude(),
+                    'c_phone' => $obj->getPhone(),
+                    'c_picture' => $obj->getImageUrl(),
+                    'c_instagram' => $obj->getInstagram(),
+                    'c_facebook' => $obj->getFacebook(),
+                    'c_twitter' => $obj->getTwitter(),
+                    'c_website' => $obj->getWebsite(),
+                    'c_email' => $obj->getEmail(),
+                    'c_person' => $obj->getPerson(),
+                    'c_favorite' => (bool)$isFvt,
+                    'c_description' => $obj->getDescription(),
+                    'c_opening_time' => $obj->getStartTime(),
+                    'c_closing_time' => $obj->getEndTime(),
+                    'cat_id' => $obj->getService()->getId()
+
+                );
+
+
+            } else {
+                $response = array(
+                    'c_id' => $obj->getId(),
+                    'c_name' => $output->getName(),
+                    'c_address' => $obj->getAddress(),
+                    'rating' => $fvtObject->getPercentage(),
+                    'c_lat' => $obj->getLat(),
+                    'c_long' => $obj->getLongitude(),
+                    'c_phone' => $obj->getPhone(),
+                    'c_picture' => $obj->getImageUrl(),
+                    'c_instagram' => $obj->getInstagram(),
+                    'c_facebook' => $obj->getFacebook(),
+                    'c_twitter' => $obj->getTwitter(),
+                    'c_website' => $obj->getWebsite(),
+                    'c_email' => $obj->getEmail(),
+                    'c_person' => $obj->getPerson(),
+                    'c_favorite' => (bool)$isFvt,
+                    'cat_id' => $obj->getService()->getId()
+                );
+            }
+            return $response;
+
+        }   else{
+            $arr = ['data' => array(
+                'result' => 0,
+                'message' => 'Company Id is missing  .(Error Message for Developer only . Translation is not available for Developers Errors)',
+            )];
+            return new Response(json_encode($arr), 400);
+        }
+    }
+
 
 }

@@ -29,7 +29,7 @@ class MarketingController extends DefaultController
             $services = $this->getDoctrine()->getRepository("AppBundle:Category")->findAll();
             foreach ($services as $service) {
                 $category[] = [
-                    'id' => $service->getCurrentTranslation()->getId(),
+                    'id' => $service->getId(),
                     'name' => $service->getCurrentTranslation()->getCatHeading()
                 ];
             }
@@ -56,8 +56,9 @@ class MarketingController extends DefaultController
             $ownerEmail = $request->get('ownerEmail',null);
             $ownerHomeTown = $request->get('ownerHomeTown',null);
             $ownerAge = $request->get('ownerAge',null);
-            $service = $this->getDoctrine()->getRepository('AppBundle:Category')->find($request->get('category'));
-
+            $cat_id  =  $request->get('category');
+            $service = $this->getDoctrine()->getRepository('AppBundle:Category')->find($cat_id);
+//            dump($cat_id,$service);die;
             $owner = new CompanyOwner();
             $owner->setName($ownerName);
             $owner->setEmail($ownerEmail);

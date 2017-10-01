@@ -26,11 +26,11 @@ class Company
      */
     protected $id;
     /**
-     * @ORM\Column(type="integer",nullable=true)
+     * @ORM\Column(type="decimal", precision=16, scale=8,nullable=true)
      */
     protected $lat;
     /**
-     * @ORM\Column(type="integer",nullable=true)
+     * @ORM\Column(type="decimal", precision=16, scale=8,nullable=true)
      */
     protected $longitude;
     /**

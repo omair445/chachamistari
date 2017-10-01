@@ -123,10 +123,15 @@
                     <div class="dz-message needsclick">
                         Drop files here or click to upload.<br>
                         <span class="note needsclick">Or Tap here to capture Image using Phone Camera</span>
+
                     </div>
 
                 </div>
             </div>
+
+
+
+
             <hr>
             <h3 align="center">Owner Details</h3>
             <br>
@@ -411,8 +416,15 @@
         maxFilesize: 10, // MB
         maxFiles: 3,
         capture:true,
+        addRemoveLinks: true,
         uploadMultiple: false,
+        dictInvalidFileType: "upload only JPG/PNG",
+        removedfile: function(file) {
+            x = confirm('Do you want to delete?');
+            if(!x) {return false}else{ file.previewElement.remove();};
+        },
         init: function() {
+
             this.hiddenFileInput.setAttribute("capture", "camera");
             this.on("maxfilesexceeded", function(file){
                 toastr.error('No more images please', 'Chacha Mistari Says')
