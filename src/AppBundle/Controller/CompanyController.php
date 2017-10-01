@@ -83,10 +83,13 @@ class CompanyController extends DefaultController
 
     /**
      * @param Request $request
-     * @Route("/webservice/save_to_favorite/{companyId}/{token}/{lang}")
+     * @Route("/webservice/save_to_favorite")
      */
-    public function fvtCompany(Request $request, $companyId = null, $token = null, $lang = 'en')
+    public function fvtCompany(Request $request)
     {
+        $companyId = $request->get('company_id',NULL);
+        $token = $request->get('token',NULL);
+        $lang = $request->get('lang','en');
         $em = $this->getDoctrine()->getManager();
         $em->getFilters()->disable('oneLocale');
         $em = $this->getDoctrine()->getManager();
@@ -133,10 +136,14 @@ class CompanyController extends DefaultController
 
     /**
      * @param Request $request
-     * @Route("/webservice/remove_favorite/{token}/{fvtId}/{lang}")
+     * @Route("/webservice/remove_favorite")
      */
-    public function unfvtCompany(Request $request, $token = null, $fvtId = null, $lang = 'en')
+    public function unfvtCompany(Request $request)
     {
+        $token = $request->get('token',NULL);
+        $fvtId = $request->get('fvt_id',NULL);
+        $lang = $request->get('lang','en');
+
         $em = $this->getDoctrine()->getManager();
         $em->getFilters()->disable('oneLocale');
         if ($fvtId && $token && $lang) {
@@ -173,10 +180,12 @@ class CompanyController extends DefaultController
 
     /**
      * @param Request $request
-     * @Route("/webservice/get_favorite/{token}/{lang}")
+     * @Route("/webservice/favorite/companies")
      */
-    public function getFvtCompanies(Request $request, $token = null, $lang = 'en')
+    public function getFvtCompanies(Request $request)
     {
+        $token = $request->get('token',NULL);
+        $lang = $request->get('lang','en');
         $em = $this->getDoctrine()->getManager();
         $em->getFilters()->disable('oneLocale');
         if ($token) {
@@ -420,14 +429,14 @@ class CompanyController extends DefaultController
         }
 
     }
-
     /**
-     * @Route("/company/{id}/{lang}")
+     * @Route("/company/details")
      */
-    public function getCompanyDetails($id = null,$lang = null)
+    public function getCompanyDetails(Request $request)
     {
+        $id =  $request->get('company_id',null);
+        $lang = $request->get('lang',null);
         if ($id || $lang) {
-
             $em = $this->getDoctrine()->getManager();
             $em->getFilters()->disable('oneLocale');
             $response = array();
@@ -442,7 +451,6 @@ class CompanyController extends DefaultController
             $lastViewCount =  $obj->getViewCount();
             if($lastViewCount){
                 $newCount = $lastViewCount+1;
-
             }else{
                 $newCount = 1;
             }
@@ -592,7 +600,7 @@ LIMIT 0 , 20");
             $ratingObject = $this->getDoctrine()->getRepository("AppBundle:Review")->findOneByCompany($obj);
 //            dump($obj); die ;
             $rating = 0;
-            if($ratingObject ){
+            if($ratingObject){
                 $rating = $ratingObject->getPercentage();
             }
             $fvtObject = $this->getDoctrine()->getRepository("AppBundle:CompanyFavourite")->findOneByCompany($obj);

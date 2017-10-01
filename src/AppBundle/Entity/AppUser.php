@@ -59,6 +59,10 @@ class AppUser
      */
     protected $mobileNumber;
     /**
+     * @ORM\Column(type="boolean",nullable=true)
+     */
+    protected $isPushActive;
+    /**
      * AppUser constructor.
      * @param $password
      */
@@ -68,6 +72,22 @@ class AppUser
 
         $this->setPassword($password);
         $this->setCreated(new \DateTime('now'));
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getisPushActive()
+    {
+        return $this->isPushActive;
+    }
+
+    /**
+     * @param mixed $isPushActive
+     */
+    public function setIsPushActive($isPushActive)
+    {
+        $this->isPushActive = $isPushActive;
     }
 
 

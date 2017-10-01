@@ -18,10 +18,13 @@ class CategoryController extends DefaultController
 {
     /**
      * @param Request $request
-     * @Route("/webservice/get_khidmati_category_wiliya/{locale}/wiliya/{token}")
+     * @Route("/webservice/category/listing")
      */
-    public function getCategoryListing(Request $request, $locale = 'en', $token = null)
+    public function getCategoryListing(Request $request)
     {
+        $locale = $request->get('locale','en');
+        $token = $request->get('token',null);
+
         $em = $this->getDoctrine()->getManager();
         $em->getFilters()->disable('oneLocale');
         $output = [];

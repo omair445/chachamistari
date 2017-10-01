@@ -125,7 +125,29 @@ class Company
     protected $owner;
     /**
      * @return mixed
+     * @ORM\Column(type="integer",nullable=true)
      */
+
+    protected $viewCount;
+
+    /**
+     * @return mixed
+     */
+    public function getViewCount()
+    {
+        return $this->viewCount;
+    }
+
+    /**
+     * @param mixed $viewCount
+     */
+    public function setViewCount($viewCount)
+    {
+        $this->viewCount = $viewCount;
+    }
+
+
+
     public function getDescription()
     {
         return $this->description;

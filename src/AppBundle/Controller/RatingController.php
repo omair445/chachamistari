@@ -18,12 +18,17 @@ class RatingController extends DefaultController
 {
     /**
      * @param Request $request
-     * @Route("/webservice/save_to_rating/{companyId}/{token}/{rating}/{ip}/{lang}")
+     * @Route("/webservice/save_to_rating/{companyId}/{token}/{rating}/{lang}")
      */
-    public function rateCompanyAction(Request $request, $companyId = null, $token = null, $rating = null, $ip = null, $lang = 'en')
+    public function rateCompanyAction(Request $request)
     {
+        $companyId = $request->get('company_id',null);
+        $token = $request->get('$key',NULL);
+        $rating = $request->get('rating',NULL);
+        $lang = $request->get('lang','en');
+
         $em = $this->getDoctrine()->getManager();
-        if ($companyId && $token && $rating && $ip) {
+        if ($companyId && $token && $rating) {
             $userObject = $this->getUserByToken($token);
             if ($userObject) {
                 $companyObject = $this->getDoctrine()->getRepository("AppBundle:Company")->find($companyId);

@@ -17,10 +17,12 @@ class LocationController extends DefaultController
 {
     /**
      * @param Request $request
-     * @Route("/webservice/get_khidmati_location/{locale}/{token}")
+     * @Route("/webservice/locations/listing")
      */
-    public function getLocationListing(Request $request, $locale = 'en', $token = null)
+    public function getLocationListing(Request $request)
     {
+        $locale = $request->get('locale',NULL);
+        $token = $request->get('token',NULL);
         $em = $this->getDoctrine()->getManager();
         $em->getFilters()->disable('oneLocale');
         $response = null;
